@@ -1,0 +1,29 @@
+{
+    "name": "LazyMod/KerberosSSO",
+    "type": "phpbb-extension",
+    "description": "Kerberos SSO with LDAP Lookup",
+    "homepage": "",
+    "version": "1.0.0",
+    "time": "2017-02-16",
+    "license": "GPL-2.0",
+    "authors": [
+        {
+            "name": "Dana Pierce",
+            "email": "dpierce@pie2k.com",
+            "homepage": "",
+            "role": ""
+        }
+    ],
+    "require": {
+        "php": "5.6.3"
+    },
+    "extra": {
+        "display-name": "Kerberos SSO with LDAP Lookup",
+        "soft-require": {
+            "phpbb/phpbb": "3.2.0,<3.2.0@dev"
+        }
+    },
+    "require-dev": {
+        "phing/phing": "2.4.*"
+    }
+}

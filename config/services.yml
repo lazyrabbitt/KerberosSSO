@@ -1,0 +1,24 @@
+services:
+    LazyMod.KerberosSSO.listener:
+        class: LazyMod\KerberosSSO\event\listener
+        arguments:
+            - '@auth'
+            - '@controller.helper'
+            - '@language'
+            - '@phpbb.pages.operator'
+            - '@template'
+            - '@user'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+        tags:
+            - { name: event.listener }
+
+    auth.provider.kerberossso:
+        class: LazyMod\KerberosSSO\phpbb\auth\provider\kerberossso
+        arguments:
+            - '@dbal.conn'
+            - '@config'
+            - '@passwords.manager'
+            - '@user'
+        tags:
+            - { name: auth.provider }

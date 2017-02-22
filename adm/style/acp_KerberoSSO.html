@@ -1,0 +1,48 @@
+<!-- INCLUDE overall_header.html -->
+
+<h1>{L_SETTINGS}</h1>
+
+<form id="acp_board" method="post" action="{U_ACTION}">
+    <fieldset>
+	<legend>Information</legend>
+	<dl>
+        <dt>Current Version #:</dt>
+		<dd>{L_KERBEROSSSO_VERSIONSET}</dd>
+	</dl>
+	<dl>
+		<dt>Current Auth Type:</dt>
+		<dd>{L_KERBEROSSSO_AUTHTYPESET}</dd>
+	</dl>
+	<dl>
+		<dt>Current Server #1:</dt>
+		<dd>{L_KERBEROSSSO_SERVER1SET}</dd>
+	</dl>
+	<dl>
+		<dt>Current Server #2:</dt>
+		<dd>{L_KERBEROSSSO_SERVER2SET}</dd>
+	</dl>
+	<dl>
+		<dt>Current LDAP User:</dt>
+		<dd>{L_KERBEROSSSO_USERSET}</dd>
+	</dl>
+    </fieldset>
+
+
+<form id="acp_board" method="post" action="{U_ACTION}">
+    <fieldset>
+	<legend>{L_KERBEROSSSO_GOODBYE}</legend>
+        <dd class="full">
+		Submitting this page will do a lookup for each user via LDAP to get their latest full name, department, city, state, and country information.  <br />
+		This process may take some time depending on the number of users that you have.  <br /><br />
+		** Note: That some servers may not support this process due to the number of LDAP binds or the time it takes to complete. **
+		</dd>
+
+        <p class="submit-buttons">
+            <input class="button1" type="submit" id="submit" name="submit" value="{L_SUBMIT}" />
+        </p>
+
+        {S_FORM_TOKEN}
+    </fieldset>
+</form>
+
+<!-- INCLUDE overall_footer.html -->
