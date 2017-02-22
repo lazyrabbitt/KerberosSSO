@@ -1,4 +1,4 @@
-# LDAP Advance
+# Kerberos Single Sign-On with LDAP Lookup
 
 ## Installation
 
