@@ -4,13 +4,13 @@
     "description": "Kerberos SSO with LDAP Lookup",
     "homepage": "",
     "version": "1.0.0",
-    "time": "2017-02-16",
+    "time": "2017-02-21",
     "license": "GPL-2.0",
     "authors": [
         {
             "name": "Dana Pierce",
             "email": "dpierce@pie2k.com",
-            "homepage": "",
+            "homepage": "https://github.com/lazyrabbitt/KerberosSSO",
             "role": ""
         }
     ],
