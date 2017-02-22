@@ -19,14 +19,10 @@ if (empty($lang) || !is_array($lang))
 }
 
 $lang = array_merge($lang, array(
-			'USER_FULLNAME'				=> $user['user_fullname'],
-			'USER_DEPARTMENT'			=> $user['user_department'],
-			'USER_CITY'					=> $user['user_city'],
-			'USER_STATE'				=> $user['user_state'],
-			'USER_COUNTRY'				=> $user['user_country'],
-			'USER_FULLNAME_TEXT'		=> 'Full Name from LDAP2',
+			'USER_FULLNAME_TEXT'		=> 'Full Name from LDAP',
 			'USER_DEPARTMENT_TEXT'		=> 'Department from LDAP',
 			'USER_CITY_TEXT'			=> 'City from LDAP',
 			'USER_STATE_TEXT'			=> 'State from LDAP',
 			'USER_COUNTRY_TEXT'			=> 'Country from LDAP',
+			'KERBEROSSO_WRONG_PW'		=> 'Invalid Password Attempt',
 ));
