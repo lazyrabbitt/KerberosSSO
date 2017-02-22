@@ -2,9 +2,9 @@
 
 ## Installation
 
-Copy the extension to phpBB/ext/LazyMod/LDAPADV
+Copy the extension to phpBB/ext/LazyMod/KerberosSSO
 
-Go to "ACP" > "Customise" > "Extensions" and enable the "LDAP Advance" extension.
+Go to "ACP" > "Customise" > "Extensions" and enable the "Kerberos SSO with LDAP Lookup" extension.
 
 ## License
 
