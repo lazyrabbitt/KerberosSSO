@@ -106,7 +106,7 @@ class main_module
 					$sql_ary = array(
 						'user_fullname'			=> $kerberosSSO_result[0][htmlspecialchars_decode($this->config['kerberosSSO_displayName'])][0],
 						'user_city'				=> $kerberosSSO_result[0][htmlspecialchars_decode($this->config['kerberosSSO_city'])][0],
-						'user_state'			=> (utf8_htmlspecialchars($kerberosSSO_result[0][htmlspecialchars_decode($this->config['kerberosSSO_country'])][0]) <> "United States") ? "" : $kerberosSSO_result[0][htmlspecialchars_decode($this->config['kerberosSSO_state'])][0],
+						'user_state'			=> $kerberosSSO_result[0][htmlspecialchars_decode($this->config['kerberosSSO_state'])][0],
 						'user_country'			=> $kerberosSSO_result[0][htmlspecialchars_decode($this->config['kerberosSSO_country'])][0],
 						'user_department'		=> $kerberosSSO_result[0][htmlspecialchars_decode($this->config['kerberosSSO_department'])][0],					
 					);

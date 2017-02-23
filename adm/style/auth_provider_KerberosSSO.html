@@ -1,6 +1,6 @@
+<center><br /><legend>{L_KERBEROSSSO}</legend></center>
 <fieldset id="auth_kerberossso_settings">
-	<legend>{L_LDAPADV}</legend>
-	<legend>{L_KERBEROSSSO_EXTRA}</legend>
+	<legend>{L_KERBEROSSSO_LDAP}</legend>
 	<dl>
 		<dt><label for="kerberosSSO_server1">{L_KERBEROSSSO_SERVER1}{L_COLON}</label><br /><span>{L_KERBEROSSSO_SERVER1_EXPLAIN}</span></dt>
 		<dd><input type="text" id="kerberosSSO_server1" size="40" name="config[kerberosSSO_server1]" value="{AUTH_KERBEROSSSO_SERVER1}" /></dd>
@@ -14,24 +14,27 @@
 		<dd><input type="text" id="kerberosSSO_port" size="40" name="config[kerberosSSO_port]" value="{AUTH_KERBEROSSSO_PORT}" /></dd>
 	</dl>
 	<dl>
-		<dt><label for="kerberosSSO_adminnotify">{L_KERBEROSSSO_ADMIN}{L_COLON}</label><br /><span>{L_KERBEROSSSO_ADMIN_EXPLAIN}</span></dt>
-		<dd><input type="text" id="kerberosSSO_adminnotify" size="40" name="config[kerberosSSO_adminnotify]" value="{AUTH_KERBEROSSSO_ADMIN}" /></dd>
-	</dl>
-	<dl>
 		<dt><label for="kerberosSSO_dn">{L_KERBEROSSSO_DN}{L_COLON}</label><br /><span>{L_KERBEROSSSO_DN_EXPLAIN}</span></dt>
 		<dd><input type="text" id="kerberosSSO_dn" size="40" name="config[kerberosSSO_base_dn]" value="{AUTH_KERBEROSSSO_BASE_DN}" /></dd>
-	</dl>
-	<dl>
-		<dt><label for="kerberosSSO_uid">{L_KERBEROSSSO_UID}{L_COLON}</label><br /><span>{L_KERBEROSSSO_UID_EXPLAIN}</span></dt>
-		<dd><input type="text" id="kerberosSSO_uid" size="40" name="config[kerberosSSO_uid]" value="{AUTH_KERBEROSSSO_UID}" /></dd>
 	</dl>
 	<dl>
 		<dt><label for="kerberosSSO_user_filter">{L_KERBEROSSSO_USER_FILTER}{L_COLON}</label><br /><span>{L_KERBEROSSSO_USER_FILTER_EXPLAIN}</span></dt>
 		<dd><input type="text" id="kerberosSSO_user_filter" size="40" name="config[kerberosSSO_user_filter]" value="{AUTH_KERBEROSSSO_USER_FILTER}" /></dd>
 	</dl>
 	<dl>
-		<dt><label for="kerberosSSO_kerbsseparator">{L_KERBEROSSSO_SSO}{L_COLON}</label><br /><span>{L_KERBEROSSSO_SSO_EXPLAIN}</span></dt>
-		<dd><input type="text" id="kerberosSSO_kerbsseparator" size="40" name="config[kerberosSSO_kerbsseparator]" value="{AUTH_KERBEROSSSO_SSO}" /></dd>
+		<dt><label for="kerberosSSO_user">{L_KERBEROSSSO_USER}{L_COLON}</label><br /><span>{L_KERBEROSSSO_USER_EXPLAIN}</span></dt>
+		<dd><input type="text" id="kerberosSSO_user" size="40" name="config[kerberosSSO_user]" value="{AUTH_KERBEROSSSO_USER}" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="kerberosSSO_password">{L_KERBEROSSSO_PASSWORD}{L_COLON}</label><br /><span>{L_KERBEROSSSO_PASSWORD_EXPLAIN}</span></dt>
+		<dd><input type="password" id="kerberosSSO_password" size="40" name="config[kerberosSSO_password]" value="{AUTH_KERBEROSSSO_PASSWORD}" autocomplete="off" /></dd>
+	</dl>
+</fieldset>
+<fieldset>
+	<legend>{L_KERBEROSSSO_FIELDS}</legend>
+	<dl>
+		<dt><label for="kerberosSSO_uid">{L_KERBEROSSSO_UID}{L_COLON}</label><br /><span>{L_KERBEROSSSO_UID_EXPLAIN}</span></dt>
+		<dd><input type="text" id="kerberosSSO_uid" size="40" name="config[kerberosSSO_uid]" value="{AUTH_KERBEROSSSO_UID}" /></dd>
 	</dl>
 	<dl>
 		<dt><label for="kerberosSSO_email">{L_KERBEROSSSO_EMAIL}{L_COLON}</label><br /><span>{L_KERBEROSSSO_EMAIL_EXPLAIN}</span></dt>
@@ -57,12 +60,27 @@
 		<dt><label for="kerberosSSO_country">{L_KERBEROSSSO_COUNTRY}{L_COLON}</label><br /><span>{L_KERBEROSSSO_COUNTRY_EXPLAIN}</span></dt>
 		<dd><input type="text" id="kerberosSSO_country" size="40" name="config[kerberosSSO_country]" value="{AUTH_KERBEROSSSO_COUNTRY}" /></dd>
 	</dl>
+</fieldset>
+<fieldset>
+	<legend>{L_KERBEROSSSO_EXTRA}</legend>
 	<dl>
-		<dt><label for="kerberosSSO_user">{L_KERBEROSSSO_USER}{L_COLON}</label><br /><span>{L_KERBEROSSSO_USER_EXPLAIN}</span></dt>
-		<dd><input type="text" id="kerberosSSO_user" size="40" name="config[kerberosSSO_user]" value="{AUTH_KERBEROSSSO_USER}" /></dd>
+		<dt><label for="kerberosSSO_adminnotify">{L_KERBEROSSSO_ADMIN}{L_COLON}</label><br /><span>{L_KERBEROSSSO_ADMIN_EXPLAIN}</span></dt>
+		<dd><input type="text" id="kerberosSSO_adminnotify" size="40" name="config[kerberosSSO_adminnotify]" value="{AUTH_KERBEROSSSO_ADMIN}" /></dd>
 	</dl>
 	<dl>
-		<dt><label for="kerberosSSO_password">{L_KERBEROSSSO_PASSWORD}{L_COLON}</label><br /><span>{L_KERBEROSSSO_PASSWORD_EXPLAIN}</span></dt>
-		<dd><input type="password" id="kerberosSSO_password" size="40" name="config[kerberosSSO_password]" value="{AUTH_KERBEROSSSO_PASSWORD}" autocomplete="off" /></dd>
+		<dt><label for="kerberossso_hidestate">{L_KERBEROSSSO_HIDESTATE}{L_COLON}</label><br /><span>{L_KERBEROSSSO_HIDESTATE_EXPLAIN}</span></dt>
+		<dd>
+			<select id="kerberossso_hidestate" name="config[kerberosSSO_hidestate]">{AUTH_KERBEROSSSO_HIDESTATE}</select>
+		</dd>
+	</dl>
+	<dl>
+		<dt><label for="kerberossso_string">{L_KERBEROSSSO_STRING}{L_COLON}</label><br /><span>{L_KERBEROSSSO_STRING_EXPLAIN}</span></dt>
+		<dd>
+			<select id="kerberossso_string" name="config[kerberosSSO_string]">{AUTH_KERBEROSSSO_STRING}</select>
+		</dd>
+	</dl>
+	<dl>
+		<dt><label for="kerberosSSO_kerbsseparator">{L_KERBEROSSSO_SSO}{L_COLON}</label><br /><span>{L_KERBEROSSSO_SSO_EXPLAIN}</span></dt>
+		<dd><input type="text" id="kerberosSSO_kerbsseparator" size="40" name="config[kerberosSSO_kerbsseparator]" value="{AUTH_KERBEROSSSO_SSO}" /></dd>
 	</dl>
 </fieldset>

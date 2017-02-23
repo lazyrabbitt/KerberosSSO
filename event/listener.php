@@ -64,7 +64,7 @@ class listener implements EventSubscriberInterface
 	*/
 	public function __construct(\phpbb\auth\auth $auth, \phpbb\controller\helper $helper, \phpbb\language\language $lang, \phpbb\pages\operators\page $page_operator, \phpbb\template\template $template, \phpbb\user $user, $phpbb_root_path, $php_ext)
 	{
-		global $config;
+		global $config, $db, $profile_cache;
 		
 		$this->auth = $auth;
 		$this->helper = $helper;
@@ -75,6 +75,8 @@ class listener implements EventSubscriberInterface
 		$this->phpbb_root_path = $phpbb_root_path;
 		$this->php_ext = $php_ext;
 		$this->config = $config;
+		$this->db = $db;
+		$this->profile_cache = $profile_cache;
 	}
 
 	/**
@@ -95,6 +97,7 @@ class listener implements EventSubscriberInterface
 			'core.viewtopic_modify_post_row'		=> 'add_topic_variables',
 			'core.memberlist_view_profile'			=> 'change_username',
 			'core.memberlist_prepare_profile_data'	=> 'profile_username_change',
+			'core.viewtopic_modify_post_row'		=> 'add_field_to_topic',
 		);
 	}
 
@@ -116,6 +119,32 @@ class listener implements EventSubscriberInterface
 		
 		$this->user->add_lang_ext('LazyMod/KerberosSSO', 'kerberosSSO_acp');
 		
+	}
+	
+	public function add_field_to_topic($event){
+		 $postrow = $event['post_row'];
+		 $poster_id = $event['poster_id'];
+	 
+		$sql = 'SELECT user_department, user_city, user_state, user_country
+			FROM ' . USERS_TABLE . "
+			WHERE user_id = '" . $poster_id . "'";
+		$result = $this->db->sql_query($sql, 600);
+		
+		while ($row = $this->db->sql_fetchrow($result))
+		{
+			$postrow = array_merge($postrow, array(
+				'USER_DEPARTMENT' => $row['user_department'],
+				'USER_CITY' => $row['user_city'],
+				'USER_STATE' => $row['user_state'],
+				'USER_COUNTRY' => $row['user_country'],
+			));
+			
+			$this->template->assign_vars(array(
+				'HIDESTATE'					=> ($this->config['kerberosSSO_hidestate'] == "Yes") ? true: false,			
+			));
+			
+		}
+		$event['post_row'] = $postrow;
 	}
 
 	public function profile_username_change($event)
@@ -171,21 +200,20 @@ class listener implements EventSubscriberInterface
 		if($this->config['auth_method'] == "kerberossso")
 		{
 			$member = $event['member'];
-
-			global $db;
 			
 			$sql = 'SELECT user_fullname
 				FROM ' . USERS_TABLE . "
 				WHERE user_id = '" . $member['user_id'] . "'";
-			$result = $db->sql_query($sql, 600);
+			$result = $this->db->sql_query($sql, 600);
 			$rowset = array();
 			
-			while ($row = $db->sql_fetchrow($result))
+			while ($row = $this->db->sql_fetchrow($result))
 			{
 				$member['username'] = $row['user_fullname'];
 			}
 			
 			$event['member'] = $member;
+			$this->db->sql_freeresult($result);
 		}
 	}
 
@@ -197,23 +225,19 @@ class listener implements EventSubscriberInterface
 			$username 			= $event['username'];
 			$mode 				= $event['mode'];
 			$username_colour 	= $event['username_colour'];
-			$guest_username 	= $event['guest_username'];
-			$custom_profile_url = $event['custom_profile_url'];
-			$_profile_cache 	= $event['_profile_cache'];
+			$guest_username = false;
+			$custom_profile_url = false;
 			
 			static $_profile_cache;
 			global $phpbb_dispatcher;
 
 			// Pull the users table based on the user_id that comes over with the function call.
-			global $db;
-			
 			$sql = 'SELECT *
 				FROM ' . USERS_TABLE . "
 				WHERE user_id = '" . $user_id . "'";
-			$result = $db->sql_query($sql, 600);
-			$rowset = array();
-
-			while ($row = $db->sql_fetchrow($result))
+			$result = $this->db->sql_query($sql, 600);
+			
+			while ($row = $this->db->sql_fetchrow($result))
 			{
 				// This modification checks if the mode is anything other than username and replaces the $username value with the full name value.
 				if($username == $row['username'] && $mode <> "username"){ $username = $row['user_fullname']; }
@@ -228,27 +252,24 @@ class listener implements EventSubscriberInterface
 					if($username == "city" && $row['user_city'] <> ""){ $username = $row['user_city']; }
 					if($username == "city" && $row['user_city'] == ""){ return ""; }
 					
-					if($username == "state" && $row['user_country'] == "United States" && $row['user_state'] <> ""){ $username = $row['user_state']; } 
-					if($username == "state" && $row['user_country'] <> "United States"){ return ""; } 
+					if($username == "state" && $row['user_state'] <> ""){ $username = $row['user_state']; } 
 					if($username == "state" && $row['user_state'] == null){ return ""; } 
 					
 					if($username == "country" && $row['user_country'] <> ""){ $username = $row['user_country']; }
 					if($username == "country" && $row['user_country'] == ""){ return ""; }
 				}
 			}
-			$db->sql_freeresult($result);
+			$this->db->sql_freeresult($result);
 
 
 			// We cache some common variables we need within this function
 			if (empty($_profile_cache))
 			{
-				global $phpbb_root_path, $phpEx;
-
-				$_profile_cache['base_url'] = append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=viewprofile&amp;u={USER_ID}');
+				$_profile_cache['base_url'] = append_sid("{$this->phpbb_root_path}memberlist.{$this->php_ext}", 'mode=viewprofile&amp;u={USER_ID}');
 				$_profile_cache['tpl_noprofile'] = '<span class="username">{USERNAME}</span>';
 				$_profile_cache['tpl_text'] = '<span>{USERNAME}</span>';
 				$_profile_cache['tpl_noprofile_colour'] = '<span style="color: {USERNAME_COLOUR};" class="username-coloured">{USERNAME}</span>';
-				$_profile_cache['tpl_profile'] = '<a href="{PROFILE_URL}" class="username">{USERNAME}</a>';
+				$_profile_cache['tpl_profile'] = '<a href="{PROFILE_URL}" style="color: {USERNAME_COLOUR};" class="username">{USERNAME}</a>';
 				$_profile_cache['tpl_profile_colour'] = '<a href="{PROFILE_URL}" style="color: {USERNAME_COLOUR};" class="username-coloured">{USERNAME}</a>';
 			}
 
@@ -262,7 +283,7 @@ class listener implements EventSubscriberInterface
 				case 'colour':
 
 					// Build correct username colour
-					$username_colour = ($username_colour) ? '#' . $username_colour : '';
+					$username_colour = ($username_colour) ? $username_colour : '';  // Since the $username_colour, if exists, comes over with the # we nolonger need to readd it like the original function.
 
 					// Return colour
 					if ($mode == 'colour')

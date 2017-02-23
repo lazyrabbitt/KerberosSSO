@@ -50,8 +50,6 @@ class kerberossso extends \phpbb\auth\provider\base
 		$this->auth = $auth;
 
 		$this->user->add_lang_ext('LazyMod\KerberosSSO', 'kerberossso_acp');
-		//$this->user->add_lang_ext('LazyMod\KerberosSSO', 'kerberossso');
-		
 	}
 
 	
@@ -106,7 +104,7 @@ class kerberossso extends \phpbb\auth\provider\base
 			}
 		}
 
-		// kerberosSSO_connect only checks whether the specified server is valid, so the connection might still fail
+		// LDAP_connect only checks whether the specified server is valid, so the connection might still fail
 		$search = @ldap_search(
 			$ldap,
 			htmlspecialchars_decode($this->config['kerberosSSO_base_dn']),
@@ -168,7 +166,7 @@ class kerberossso extends \phpbb\auth\provider\base
 				}
 			}
 
-			// kerberosSSO_connect only checks whether the specified server is valid, so the connection might still fail
+			// LDAP_connect only checks whether the specified server is valid, so the connection might still fail
 			$search = @ldap_search(
 				$ldap,
 				htmlspecialchars_decode($this->config['kerberosSSO_base_dn']),
@@ -217,11 +215,11 @@ class kerberossso extends \phpbb\auth\provider\base
 		switch ($this->config['kerberosSSO_separator'])
 		{
 			case "\\":
-				list($realm, $kerbuser) = explode($this->config['kerberosSSO_separator'], $this->request->server('REMOTE_USER', ''));
+				list($realm, $kerbuser) = explode($this->config['kerberosSSO_separator'], $this->request->server(htmlspecialchars_decode($this->config['kerberosSSO_string']), ''));
 				break;
 			case "@":
 			default:
-				list($kerbuser, $realm) = explode($this->config['kerberosSSO_separator'], $this->request->server('REMOTE_USER', ''));
+				list($kerbuser, $realm) = explode($this->config['kerberosSSO_separator'], $this->request->server(htmlspecialchars_decode($this->config['kerberosSSO_string']), ''));
 				break;
 		}
 		
@@ -243,14 +241,13 @@ class kerberossso extends \phpbb\auth\provider\base
 			);
 		}
 			
-		if( ($kerbuser && !$username) || $kerbuser == $username)
+		if( ($kerbuser == $username && $kerbuser) || (!$username && $kerbuser) )
 		{
 				// Reset the $username field to match the detected kerberos username.  Keeps the rest of the function looking similar to the origianl LDAP.
 				$username = $kerbuser;
-				// set dummy password. The Web server has authenticated the user.
-				if(!$password)
-				{
-					$password = "DummyPassword-SSO";
+				if(!password){
+					// set dummy password. The Web server has authenticated the user.
+					//$password = "DummyPassword-SSO";
 				}
 		}	
 		else
@@ -280,7 +277,7 @@ class kerberossso extends \phpbb\auth\provider\base
 		
 		if ($kerberosSSO_result === false || !is_array($kerberosSSO_result))
 		{
-			
+			@ldap_close($ldap);
 			if($this->config['kerberosSSO_server2'])
 			{
 				list($kerberosSSO_result, $ldap) = $this->ldapconnect(htmlspecialchars_decode($this->config['kerberosSSO_server2']), $username);
@@ -355,7 +352,7 @@ class kerberossso extends \phpbb\auth\provider\base
 
 		if (is_array($kerberosSSO_result) && sizeof($kerberosSSO_result) > 1)
 		{
-			if ($kerbuser || @ldap_bind($ldap, $kerberosSSO_result[0]['dn'], htmlspecialchars_decode($password)))
+			if ($kerbuser == $username || @ldap_bind($ldap, $kerberosSSO_result[0]['dn'], htmlspecialchars_decode($password)))
 			{
 				$sql ='SELECT *
 					FROM ' . USERS_TABLE . "
@@ -371,7 +368,7 @@ class kerberossso extends \phpbb\auth\provider\base
 					$sql_ary = array(
 						'user_fullname'			=> $kerberosSSO_result[0][htmlspecialchars_decode($this->config['kerberosSSO_displayName'])][0],
 						'user_city'				=> $kerberosSSO_result[0][htmlspecialchars_decode($this->config['kerberosSSO_city'])][0],
-						'user_state'			=> (utf8_htmlspecialchars($kerberosSSO_result[0][htmlspecialchars_decode($this->config['kerberosSSO_country'])][0]) <> "United States") ? "" : $kerberosSSO_result[0][htmlspecialchars_decode($this->config['kerberosSSO_state'])][0],
+						'user_state'			=> $kerberosSSO_result[0][htmlspecialchars_decode($this->config['kerberosSSO_state'])][0],
 						'user_country'			=> $kerberosSSO_result[0][htmlspecialchars_decode($this->config['kerberosSSO_country'])][0],
 						'user_department'		=> $kerberosSSO_result[0][htmlspecialchars_decode($this->config['kerberosSSO_department'])][0],					
 					);
@@ -454,9 +451,12 @@ class kerberossso extends \phpbb\auth\provider\base
 				);
 			}
 			
-			unset($kerberosSSO_result);
 		}
 
+		@ldap_close($ldap);
+		unset($kerberosSSO_result);
+		unset($ldap);
+		
 		add_log('user', "Login Failed", "Invalid username - " . $username);
 		return array(
 			'status'	=> LOGIN_ERROR_USERNAME,
@@ -518,8 +518,6 @@ class kerberossso extends \phpbb\auth\provider\base
 		
 		$result = @ldap_get_entries($ldap, $search);
 		
-		@ldap_close($ldap);
-		
 		return array($result, $ldap);
 	}
 
@@ -530,7 +528,7 @@ class kerberossso extends \phpbb\auth\provider\base
 	{
 		// These are fields required in the config table
 		return array(
-			'kerberosSSO_server1', 'kerberosSSO_server2', 'kerberosSSO_port', 'kerberosSSO_base_dn', 'kerberosSSO_uid', 'kerberosSSO_user_filter', 'kerberosSSO_email', 'kerberosSSO_user', 'kerberosSSO_password', 'kerberosSSO_displayName', 'kerberosSSO_city', 'kerberosSSO_state', 'kerberosSSO_country', 'kerberosSSO_department','kerberosSSO_adminnotify','kerberosSSO_separator',
+			'kerberosSSO_hidestate', 'kerberosSSO_server1', 'kerberosSSO_server2', 'kerberosSSO_string', 'kerberosSSO_port', 'kerberosSSO_base_dn', 'kerberosSSO_uid', 'kerberosSSO_user_filter', 'kerberosSSO_email', 'kerberosSSO_user', 'kerberosSSO_password', 'kerberosSSO_displayName', 'kerberosSSO_city', 'kerberosSSO_state', 'kerberosSSO_country', 'kerberosSSO_department','kerberosSSO_adminnotify','kerberosSSO_separator',
 		);
 	}
 
@@ -558,6 +556,15 @@ class kerberossso extends \phpbb\auth\provider\base
 				'AUTH_KERBEROSSSO_COUNTRY'  	=> $new_config['kerberosSSO_country'],
 				'AUTH_KERBEROSSSO_SSO'			=> $new_config['kerberosSSO_separator'],
 				'AUTH_KERBEROSSSO_ADMIN'		=> $new_config['kerberosSSO_adminnotify'],
+				'AUTH_KERBEROSSSO_STRING'		=> build_select(array(
+									'AUTH_USER'			=> 'KERBEROSSSO_AUTH_USER',
+									'LOGON_USER'		=> 'KERBEROSSSO_LOGON_USER',
+									'REMOTE_USER'		=> 'KERBEROSSSO_REMOTE_USER',
+								), ($this->config['kerberosSSO_string']) ? $this->config['kerberosSSO_string'] : 'AUTH_USER' ),
+				'AUTH_KERBEROSSSO_HIDESTATE'	=> build_select(array(
+									'Yes'				=> 'KERBEROSSSO_YES',
+									'No'				=> 'KERBEROSSSO_NO',
+								), isset($this->config['kerberosSSO_hidestate']) ? $this->config['kerberosSSO_hidestate'] : 'YES'),
 			),
 		);
 	}

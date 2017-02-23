@@ -46,6 +46,8 @@ class kerberosSSO_1_0_0 extends migration
 			array('config.add', array('kerberosSSO_state',  'st')),
 			array('config.add', array('kerberosSSO_country',  'co')),
 			array('config.add', array('kerberosSSO_department',  'department')),
+			array('config.add', array('kerberosSSO_hidestate',  'AUTH_USER')),
+
 			
 			array('config.add', array('kerberosSSO_goodbye', 0)),
 

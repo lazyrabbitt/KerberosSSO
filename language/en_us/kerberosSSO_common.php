@@ -25,4 +25,7 @@ $lang = array_merge($lang, array(
 			'USER_STATE_TEXT'			=> 'State from LDAP',
 			'USER_COUNTRY_TEXT'			=> 'Country from LDAP',
 			'KERBEROSSO_WRONG_PW'		=> 'Invalid Password Attempt',
+			'TOPIC_LOCATION_TEXT'			=> 'Location',
+			'TOPIC_USER_DEPARTMENT_TEXT'	=> 'Department',
+
 ));

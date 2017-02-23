@@ -39,6 +39,8 @@ foreach ($arr as $key => $val)
 	$db->sql_freeresult($result);
 }
 
+
+
 $lang = array_merge($lang, array(
 	'KERBEROSSSO'							=> 'KERBEROS SSO WITH MULTIPLE SERVER LDAP LOOKUP AND BACKUP LDAP BIND',
 	'KERBEROSSSO_EXTRA'						=> '', //'<br><hr>**Note**<br><br>If you enter two server names, both will be verified for functionality.  If only one is working, the verification will fail.<br>&nbsp;<hr>',
@@ -66,8 +68,8 @@ $lang = array_merge($lang, array(
 	'KERBEROSSSO_CITY_EXPLAIN'				=> 'Fill in to copy this field to be used in the profile of the user, e.g. <samp>l</samp>.',
 	'KERBEROSSSO_STATE'		   				=> 'LDAP State attribute',
 	'KERBEROSSSO_STATE_EXPLAIN'				=> 'Fill in to copy this field to be used in the profile of the user, e.g. <samp>st</samp>.',
-	'KERBEROSSSO_SSO'			   			=> 'Single Sign-On Seperator',
-	'KERBEROSSSO_SSO_EXPLAIN'				=> 'Set this to the seperator value for the $_SERVER("REMOTE_USER") variable.  Note that this is server specific, e.g. <samp>\</samp> for IIS or <samp>@</samp> for Apache.',
+	'KERBEROSSSO_SSO'			   			=> 'Global PHP Variable Separator',
+	'KERBEROSSSO_SSO_EXPLAIN'				=> 'Set this to the separator value for the PHP Global Variable.<br />Note that this is server specific, e.g. <samp>\</samp> for IIS or <samp>@</samp> for Apache.',
 	'KERBEROSSSO_COUNTRY'		   			=> 'LDAP Country atribute',
 	'KERBEROSSSO_COUNTRY_EXPLAIN'			=> 'Fill in to copy this field to be used in the profile of the user, e.g. <samp>co</samp>.',
 	'KERBEROSSSO_SERVER1'					=> 'LDAP server name',
@@ -89,5 +91,12 @@ $lang = array_merge($lang, array(
 	'KERBEROSSSO_LDAPLOOKUP'   				=> 'Settings',
 	'KERBEROSSSO_GOODBYE'      				=> 'Kerberos SSO LDAP Update',
 	'KERBEROSSSO_SETTING_SAVED' 			=> 'LDAP Updates have successfully taken place!',
+
+	'KERBEROSSSO_STRING'      				=> 'Global PHP Variable',
+	'KERBEROSSSO_STRING_EXPLAIN' 			=> 'Different auth methods will populate different global variables in PHP.  Select one of the common ones.',	
+	'KERBEROSSSO_REMOTE_USER'      			=> 'REMOTE_USER',
+	'KERBEROSSSO_AUTH_USER' 				=> 'AUTH_USER',
+	'KERBEROSSSO_LOGON_USER' 				=> 'LOGON_USER',
+	
 
 ));
