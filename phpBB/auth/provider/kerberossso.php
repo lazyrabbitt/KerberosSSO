@@ -38,7 +38,7 @@ class kerberossso extends \phpbb\auth\provider\base
 	 */
 	public function __construct(\phpbb\db\driver\driver_interface $db, \phpbb\config\config $config, \phpbb\passwords\manager $passwords_manager, \phpbb\user $user)
 	{
-		global $phpbb_root_path, $phpEx, $request, $auth;
+		global $phpbb_root_path, $phpEx, $request, $auth, $phpbb_log;
 		
 		$this->phpbb_root_path = $phpbb_root_path;
 		$this->phpEx = $phpEx;
@@ -48,6 +48,7 @@ class kerberossso extends \phpbb\auth\provider\base
 		$this->passwords_manager = $passwords_manager;
 		$this->user = $user;
 		$this->auth = $auth;
+		$this->phpbb_log = $phpbb_log;
 
 		$this->user->add_lang_ext('LazyMod\KerberosSSO', 'kerberossso_acp');
 	}
@@ -391,7 +392,7 @@ class kerberossso extends \phpbb\auth\provider\base
 					}
 
 					// Successful login... set user_login_attempts to zero...
-					add_log('user', "Login Success", "User has successfully logged in - " . $username);
+					$this->phpbb_log->add('user', "Login Success", "User has successfully logged in - " . $username);
 					return array(
 						'status'		=> LOGIN_SUCCESS,
 						'error_msg'		=> false,
@@ -431,7 +432,7 @@ class kerberossso extends \phpbb\auth\provider\base
 					);
 
 					// this is the user's first login so create an empty profile
-					add_log('user', "Profile created for User", "Profile has been created for - " . $username);
+					$this->phpbb_log->add('user', "Profile created for User", "Profile has been created for - " . $username);
 					
 					return array(
 						'status'		=> LOGIN_SUCCESS_CREATE_PROFILE,
@@ -442,7 +443,7 @@ class kerberossso extends \phpbb\auth\provider\base
 			}
 			else
 			{
-				add_log('user', "Login Failed", "Invalid password attempt for - " . $username);
+				$this->phpbb_log->add('user', "Login Failed", "Invalid password attempt for - " . $username);
 				// Give status about wrong password...
 				return array(
 					'status'		=> LOGIN_ERROR_PASSWORD,
@@ -457,7 +458,7 @@ class kerberossso extends \phpbb\auth\provider\base
 		unset($kerberosSSO_result);
 		unset($ldap);
 		
-		add_log('user', "Login Failed", "Invalid username - " . $username);
+		$this->phpbb_log->add('user', "Login Failed", "Invalid username - " . $username);
 		return array(
 			'status'	=> LOGIN_ERROR_USERNAME,
 			'error_msg'	=> 'LOGIN_ERROR_USERNAME',
